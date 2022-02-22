@@ -55,6 +55,21 @@ class FormationRepository extends ServiceEntityRepository
                     ->getResult();            
         }
     }
+    
+    /**
+     * Retourne tous les enregistrements correspondant au
+     * niveau entré en paramètre
+     * @param type $valeur
+     * @return array
+     */
+    public function findByNiveaux($valeur): array{
+        return $this->createQueryBuilder('f')
+                    ->where('f.niveaux = :valeur')
+                    ->orderBy('f.publishedAt', 'DESC')
+                    ->setParameter('valeur', $valeur)
+                    ->getQuery()
+                    ->getResult();
+    }
         
     /**
      * Retourne les n formations les plus récentes

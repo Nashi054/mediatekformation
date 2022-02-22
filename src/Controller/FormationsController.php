@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\FormationRepository;
+use App\Repository\NiveauRepository;
 
 /**
  * Description of FormationsController
@@ -20,14 +21,14 @@ class FormationsController extends AbstractController {
      *
      * @var FormationRepository
      */
-    private $repository;
+    private $formationRepository;
 
     /**
      * 
      * @param FormationRepository $repository
      */
-    function __construct(FormationRepository $repository) {
-        $this->repository = $repository;
+    function __construct(FormationRepository $formationRepository, NiveauRepository $niveauRepository) {
+        $this->formationRepository = $formationRepository;
     }
 
     /**
@@ -35,7 +36,7 @@ class FormationsController extends AbstractController {
      * @return Response
      */
     public function index(): Response{
-        $formations = $this->repository->findAll();
+        $formations = $this->formationRepository->findAll();
         return $this->render(self::PAGEFORMATIONS, [
             'formations' => $formations
         ]);
@@ -48,7 +49,7 @@ class FormationsController extends AbstractController {
      * @return Response
      */
     public function sort($champ, $ordre): Response{
-        $formations = $this->repository->findAllOrderBy($champ, $ordre);
+        $formations = $this->formationRepository->findAllOrderBy($champ, $ordre);
         return $this->render(self::PAGEFORMATIONS, [
            'formations' => $formations
         ]);
@@ -61,14 +62,39 @@ class FormationsController extends AbstractController {
      * @return Response
      */
     public function findAllContain($champ, Request $request): Response{
-        if($this->isCsrfTokenValid('filtre_'.$champ, $request->get('_token'))){
-            $valeur = $request->get("recherche");
-            $formations = $this->repository->findByContainValue($champ, $valeur);
-            return $this->render(self::PAGEFORMATIONS, [
-                'formations' => $formations
-            ]);
+        if($champ == "niveaux"){
+            if($this->isCsrfTokenValid('filtre_niveaux', $request->get('_token'))){
+                $valeur = $request->get("recherche");
+                switch($valeur){
+                    case "débutant":
+                        $valeur = 1;
+                        break;
+                    case "confirmé":
+                        $valeur = 2;
+                        break;
+                    case "expert":
+                        $valeur = 3;
+                        break;
+                    default:
+                        $valeur = "";
+                        break;
+                }
+                $formations = $this->formationRepository->findByNiveaux($valeur);
+                return $this->render(self::PAGEFORMATIONS, [
+                    'formations' => $formations
+                ]);
+            }
+            return $this->redirectToRoute("formations");
+        }else{
+            if($this->isCsrfTokenValid('filtre_'.$champ, $request->get('_token'))){
+                $valeur = $request->get("recherche");
+                $formations = $this->formationRepository->findByContainValue($champ, $valeur);
+                return $this->render(self::PAGEFORMATIONS, [
+                    'formations' => $formations
+                ]);
+            }
+            return $this->redirectToRoute("formations");
         }
-        return $this->redirectToRoute("formations");
     }  
     
     /**
@@ -77,7 +103,7 @@ class FormationsController extends AbstractController {
      * @return Response
      */
     public function showOne($id): Response{
-        $formation = $this->repository->find($id);
+        $formation = $this->formationRepository->find($id);
         return $this->render("pages/formation.html.twig", [
             'formation' => $formation
         ]);        

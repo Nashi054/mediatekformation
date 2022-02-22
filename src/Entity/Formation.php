@@ -49,6 +49,11 @@ class Formation
      */
     private $videoId;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Niveau::class)
+     */
+    private $niveaux;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +131,18 @@ class Formation
     public function setVideoId(?string $videoId): self
     {
         $this->videoId = $videoId;
+
+        return $this;
+    }
+
+    public function getNiveaux(): ?Niveau
+    {
+        return $this->niveaux;
+    }
+
+    public function setNiveaux(?Niveau $niveaux): self
+    {
+        $this->niveaux = $niveaux;
 
         return $this;
     }
