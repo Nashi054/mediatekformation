@@ -45,6 +45,13 @@ class FormationRepository extends ServiceEntityRepository
                     ->orderBy('f.'.$champ, 'ASC')
                     ->getQuery()
                     ->getResult();
+        }elseif($champ == "niveaux"){
+            return $this->createQueryBuilder('f')
+                    ->where('f.'.$champ.' = :valeur')
+                    ->setParameter('valeur', $valeur)
+                    ->orderBy('f.publishedAt', 'DESC')
+                    ->getQuery()
+                    ->getResult();  
         }else{
             return $this->createQueryBuilder('f')
                     ->where('f.'.$champ.' LIKE :valeur')
@@ -54,21 +61,6 @@ class FormationRepository extends ServiceEntityRepository
                     ->getQuery()
                     ->getResult();            
         }
-    }
-    
-    /**
-     * Retourne tous les enregistrements correspondant au
-     * niveau entré en paramètre
-     * @param type $valeur
-     * @return array
-     */
-    public function findByNiveaux($valeur): array{
-        return $this->createQueryBuilder('f')
-                    ->where('f.niveaux = :valeur')
-                    ->orderBy('f.publishedAt', 'DESC')
-                    ->setParameter('valeur', $valeur)
-                    ->getQuery()
-                    ->getResult();
     }
         
     /**

@@ -18,18 +18,4 @@ class NiveauRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Niveau::class);
     }
-
-    /**
-     * Retourne tous les enregistrements correspondant au
-     * niveau entré en paramètre
-     * @param type $valeur
-     * @return array
-     */
-    public function findByNiveaux($valeur): array{
-            return $this->createQueryBuilder('n')
-                        ->where('n.label = :valeur')
-                        ->setParameter('valeur', $valeur)
-                        ->getQuery()
-                        ->getResult();
-    }
 }
