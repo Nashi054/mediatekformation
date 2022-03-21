@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Description of AdminFormationsController
+ * Contrôleur de la page "Formations" dans la partie admin
  *
  * @author Niels-Patrick
  */
